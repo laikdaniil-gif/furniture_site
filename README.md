@@ -14,3 +14,5 @@ STACK технологий - FRONTEND
 3. Axios - запросы к серверу
 4. React-router-dom - навигация
 5. MobX - стейт менеджмент
+
+Авторизация реализована через JSON Web Token
