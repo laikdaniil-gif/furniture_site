@@ -21,8 +21,8 @@ const Product = sequalize.define('product', {
     name: {type: DataTypes.STRING, unique: true, allowNull: false},
     price: {type: DataTypes.INTEGER, allowNull: false},
     quantity: {type: DataTypes.INTEGER, allowNull: false},
-    size: {type: DataTypes.INTEGER, allowNull: false},
-    img: {type: DataTypes.STRING, allowNull: false},
+    size: {type: DataTypes.STRING, allowNull: false},
+    img: {type: DataTypes.STRING, allowNull: true},
 })
 
 const ProductType = sequalize.define('product_type', {
@@ -63,7 +63,7 @@ Product.belongsTo(Product)
 Product.hasMany(CartProduct)
 CartProduct.belongsTo(Product)
 
-Product.hasMany(ProductInfo)
+Product.hasMany(ProductInfo, {as: 'info'})
 ProductInfo.belongsTo(Product)
 
 ProductType.belongsToMany(Material, {through: MaterialProductType})

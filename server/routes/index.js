@@ -8,7 +8,7 @@ const productTypesRouter = require('./productTypesRouter')
 
 router.use('/user', userRouter)
 router.use('/products', productsRouter)
-router.use('/prouctType', productTypesRouter)
+router.use('/productType', productTypesRouter)
 router.use('/material', materialRouter)
 
 module.exports = router

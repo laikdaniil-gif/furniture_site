@@ -1,12 +1,9 @@
 const Router = require('express')
 const router = new Router()
+const productTypesController = require('../controllers/productTypesController')
 
 
-router.post('/', (res, req) => {
-    res.json({message:'It`s working!'})
-})
-router.get('/', (res, req) => {
-    res.json({message:'It`s working!'})
-})
+router.post('/', productTypesController.create)
+router.get('/', productTypesController.getAll)
 
 module.exports = router
