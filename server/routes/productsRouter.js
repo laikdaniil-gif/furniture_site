@@ -1,9 +1,9 @@
 const Router = require('express')
-const productsController = require('../controllers/productsController.js')
+const productsController = require('../controllers/productsController')
 const router = new Router()
+const checkRole = require('../middleware/checkRoleMiddleware')
 
-
-router.post('/', productsController.create)
+router.post('/', checkRole('ADMIN'), productsController.create)
 router.get('/', productsController.getAll)
 router.get('/:id', productsController.getOne)
 
