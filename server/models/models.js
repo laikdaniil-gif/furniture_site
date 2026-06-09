@@ -18,6 +18,10 @@ const Order = sequalize.define('order', {
 
 const OrderProduct = sequalize.define('order_device', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    orderId: { type: DataTypes.INTEGER, allowNull: false },
+    productId: { type: DataTypes.INTEGER, allowNull: false },
+    quantity: { type: DataTypes.INTEGER, defaultValue: 1 },
+    priceAtPurchase: { type: DataTypes.INTEGER, allowNull: false }
 })
 
 const ShoppingCart = sequalize.define('shopping_cart', {

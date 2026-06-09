@@ -11,6 +11,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import OrdersPage from './pages/OrdersPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminProducts from './pages/Admin/AdminProducts';
 import AdminTypes from './pages/Admin/AdminTypes';
 import AdminMaterials from './pages/Admin/AdminMaterials';
@@ -26,6 +27,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
+        {/* Публичные маршруты */}
         <Route index element={<HomePage />} />
         <Route path="catalog" element={<CatalogPage />} />
         <Route path="product/:id" element={<ProductPage />} />
@@ -33,16 +35,20 @@ function App() {
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
 
+        {/* Приватные маршруты (только для авторизованных) */}
         <Route element={<PrivateRoute />}>
           <Route path="checkout" element={<CheckoutPage />} />
           <Route path="orders" element={<OrdersPage />} />
         </Route>
 
+        {/* Админские маршруты (только для ADMIN) */}
         <Route element={<AdminRoute />}>
-          <Route path="admin" element={<Navigate to="/admin/products" replace />} />
-          <Route path="admin/products" element={<AdminProducts />} />
-          <Route path="admin/types" element={<AdminTypes />} />
-          <Route path="admin/materials" element={<AdminMaterials />} />
+          <Route path="admin" element={<AdminDashboard />}>
+            <Route index element={<Navigate to="products" replace />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="types" element={<AdminTypes />} />
+            <Route path="materials" element={<AdminMaterials />} />
+          </Route>
         </Route>
       </Route>
     </Routes>

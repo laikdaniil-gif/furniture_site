@@ -3,39 +3,34 @@ import { fetchMaterials, createMaterial, deleteMaterial } from '../../api/materi
 
 const AdminMaterials = () => {
   const [materials, setMaterials] = useState([]);
-  const [newMaterialName, setNewMaterialName] = useState('');
+  const [newName, setNewName] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const loadMaterials = async () => {
+  const load = async () => {
+    const { data } = await fetchMaterials();
+    setMaterials(data);
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const add = async () => {
+    if (!newName.trim()) return;
     try {
-      const { data } = await fetchMaterials();
-      setMaterials(data);
+      await createMaterial(newName);
+      setNewName('');
+      load();
+      setSuccessMessage('Добавлено');
+      setTimeout(() => setSuccessMessage(''), 2000);
     } catch (err) {
-      alert('Ошибка загрузки материалов');
+      alert('Ошибка добавления');
     }
   };
 
-  useEffect(() => {
-    loadMaterials();
-  }, []);
-
-  const handleCreate = async () => {
-    if (!newMaterialName.trim()) return;
-    try {
-      await createMaterial(newMaterialName);
-      alert('Материал добавлен');
-      setNewMaterialName('');
-      loadMaterials();
-    } catch (err) {
-      alert('Ошибка создания');
-    }
-  };
-
-  const handleDelete = async (id) => {
+  const del = async (id) => {
     if (window.confirm('Удалить материал?')) {
       try {
         await deleteMaterial(id);
-        alert('Материал удалён');
-        loadMaterials();
+        load();
       } catch (err) {
         alert('Ошибка удаления');
       }
@@ -47,17 +42,18 @@ const AdminMaterials = () => {
       <div className="admin-add-form">
         <input
           type="text"
+          value={newName}
+          onChange={e => setNewName(e.target.value)}
           placeholder="Название материала"
-          value={newMaterialName}
-          onChange={(e) => setNewMaterialName(e.target.value)}
         />
-        <button onClick={handleCreate} className="btn btn-small">Добавить</button>
+        <button onClick={add} className="btn btn-small">Добавить</button>
       </div>
+      {successMessage && <div className="success-message">{successMessage}</div>}
       <ul className="admin-list">
         {materials.map(m => (
           <li key={m.id}>
             <span>{m.name}</span>
-            <button onClick={() => handleDelete(m.id)} className="text-red-500">удалить</button>
+            <button onClick={() => del(m.id)} className="delete-btn">Удалить</button>
           </li>
         ))}
       </ul>

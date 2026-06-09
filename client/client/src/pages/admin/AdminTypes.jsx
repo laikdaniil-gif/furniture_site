@@ -3,39 +3,37 @@ import { fetchTypes, createType, deleteType } from '../../api/types';
 
 const AdminTypes = () => {
   const [types, setTypes] = useState([]);
-  const [newTypeName, setNewTypeName] = useState('');
+  const [newName, setNewName] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const loadTypes = async () => {
-    try {
-      const { data } = await fetchTypes();
-      setTypes(data);
-    } catch (err) {
-      alert('Ошибка загрузки категорий');
-    }
+  const load = async () => {
+    const { data } = await fetchTypes();
+    setTypes(data);
   };
 
-  useEffect(() => {
-    loadTypes();
-  }, []);
+  useEffect(() => { load(); }, []);
 
-  const handleCreate = async () => {
-    if (!newTypeName.trim()) return;
-    try {
-      await createType(newTypeName);
-      alert('Категория добавлена');
-      setNewTypeName('');
-      loadTypes();
-    } catch (err) {
-      alert('Ошибка создания');
-    }
-  };
+  const [isAdding, setIsAdding] = useState(false);
 
-  const handleDelete = async (id) => {
+    const add = async () => {
+        if (!newName.trim()) return;
+        setIsAdding(true);
+        try {
+            await createType(newName);
+            setNewName('');
+            load();
+            setTimeout(() => setIsAdding(false), 1500);
+        } catch (err) {
+            setIsAdding(false);
+            alert('Ошибка добавления');
+  }
+};
+
+  const del = async (id) => {
     if (window.confirm('Удалить категорию?')) {
       try {
         await deleteType(id);
-        alert('Категория удалена');
-        loadTypes();
+        load();
       } catch (err) {
         alert('Ошибка удаления');
       }
@@ -47,17 +45,20 @@ const AdminTypes = () => {
       <div className="admin-add-form">
         <input
           type="text"
+          value={newName}
+          onChange={e => setNewName(e.target.value)}
           placeholder="Название категории"
-          value={newTypeName}
-          onChange={(e) => setNewTypeName(e.target.value)}
         />
-        <button onClick={handleCreate} className="btn btn-small">Добавить</button>
+        <button onClick={add} className="btn btn-small" style={{ backgroundColor: isAdding ? '#22c55e' : '' }}>
+  {isAdding ? 'Добавлено' : 'Добавить'}
+</button>
       </div>
+      {successMessage && <div className="success-message">{successMessage}</div>}
       <ul className="admin-list">
         {types.map(t => (
           <li key={t.id}>
             <span>{t.name}</span>
-            <button onClick={() => handleDelete(t.id)} className="text-red-500">удалить</button>
+            <button onClick={() => del(t.id)} className="delete-btn">Удалить</button>
           </li>
         ))}
       </ul>

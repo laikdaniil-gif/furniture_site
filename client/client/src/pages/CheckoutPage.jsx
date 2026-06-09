@@ -7,6 +7,8 @@ import useAuthStore from '../store/useAuthStore';
 const CheckoutPage = () => {
   const [form, setForm] = useState({ phone: '', postcode: '', address: '' });
   const [loading, setLoading] = useState(false);
+  const [buttonStatus, setButtonStatus] = useState('idle'); // idle, success, error
+  const [errorMessage, setErrorMessage] = useState('');
   const { fetchCart } = useCartStore();
   const { user } = useAuthStore();
   const navigate = useNavigate();
@@ -18,16 +20,41 @@ const CheckoutPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage('');
+    setButtonStatus('idle');
     try {
       await createOrder(form.phone, form.postcode, form.address);
-      alert('Заказ успешно оформлен!');
-      await fetchCart(); // обновляем корзину (она должна опустеть)
-      navigate('/orders');
+      
+      // Успех: меняем кнопку на зелёную с текстом "Заказ оформлен"
+      setButtonStatus('success');
+      await fetchCart(); // очищаем корзину
+      
+      // Через 2 секунды перенаправляем на страницу заказов
+      setTimeout(() => {
+        navigate('/orders');
+      }, 1500);
     } catch (err) {
-      alert(err.response?.data?.message || 'Ошибка оформления заказа');
+      const msg = err.response?.data?.message || 'Ошибка оформления заказа';
+      setErrorMessage(msg);
+      setButtonStatus('error');
+      // Красное мигание кнопки на 1 секунду
+      setTimeout(() => setButtonStatus('idle'), 1000);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Определяем класс кнопки в зависимости от статуса
+  const getButtonClass = () => {
+    if (buttonStatus === 'success') return 'btn btn-success';
+    if (buttonStatus === 'error') return 'btn btn-error';
+    return 'btn btn-dark';
+  };
+
+  const getButtonText = () => {
+    if (buttonStatus === 'success') return '✓ Заказ оформлен';
+    if (loading) return 'Оформление...';
+    return 'Подтвердить заказ';
   };
 
   return (
@@ -68,9 +95,22 @@ const CheckoutPage = () => {
               onChange={handleChange}
             />
           </div>
-          <button type="submit" className="btn btn-dark" disabled={loading}>
-            {loading ? 'Оформление...' : 'Подтвердить заказ'}
+          <button
+            type="submit"
+            className={getButtonClass()}
+            disabled={loading || buttonStatus === 'success'}
+            style={{
+              transition: 'all 0.3s',
+              width: '100%',
+            }}
+          >
+            {getButtonText()}
           </button>
+          {errorMessage && (
+            <div className="error-message" style={{ color: 'red', marginTop: '1rem', textAlign: 'center' }}>
+              {errorMessage}
+            </div>
+          )}
         </form>
       </div>
     </div>
