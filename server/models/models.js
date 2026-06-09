@@ -26,7 +26,7 @@ const ShoppingCart = sequalize.define('shopping_cart', {
 
 const CartProduct = sequalize.define('cart_product', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    quantity: {type: DataTypes.INTEGER, allowNull: false}
+    quantity: { type: DataTypes.INTEGER, defaultValue: 1, allowNull: false }
 })
 
 const Product = sequalize.define('product', {
