@@ -8,12 +8,25 @@ const User = sequalize.define('user', {
     role: {type: DataTypes.STRING, defaultValue: "USER"},
 })
 
+const Order = sequalize.define('order', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    phone: {type: DataTypes.STRING,  allowNull: false},
+    postcode: {type: DataTypes.STRING, allowNull: false},
+    addressee: {type: DataTypes.STRING, allowNull: false},
+    status:{type: DataTypes.INTEGER, defaultValue: 1}
+})
+
+const OrderProduct = sequalize.define('order_device', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+})
+
 const ShoppingCart = sequalize.define('shopping_cart', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
 })
 
 const CartProduct = sequalize.define('cart_product', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    quantity: {type: DataTypes.INTEGER, allowNull: false}
 })
 
 const Product = sequalize.define('product', {
@@ -48,6 +61,15 @@ const MaterialProductType = sequalize.define('material_product_type', {
 User.hasOne(ShoppingCart)
 ShoppingCart.belongsTo(User)
 
+User.hasMany(Order);
+Order.belongsTo(User);
+
+Order.hasMany(OrderProduct);
+OrderProduct.belongsTo(Order);
+
+Order.hasOne(User);
+User.belongsTo(Order);
+
 ShoppingCart.hasMany(CartProduct)
 CartProduct.belongsTo(ShoppingCart)
 
@@ -66,6 +88,9 @@ CartProduct.belongsTo(Product)
 Product.hasMany(ProductInfo, {as: 'info'})
 ProductInfo.belongsTo(Product)
 
+Product.hasMany(OrderProduct);
+OrderProduct.belongsTo(Product);
+
 ProductType.belongsToMany(Material, {through: MaterialProductType})
 Material.belongsToMany(ProductType, {through: MaterialProductType})
 
@@ -77,5 +102,7 @@ module.exports = {
     ProductType,
     Material,
     ProductInfo,
-    MaterialProductType
+    MaterialProductType,
+    Order,
+    OrderProduct
 }
