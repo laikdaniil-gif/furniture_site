@@ -13,13 +13,14 @@ const AdminMaterials = () => {
 
   useEffect(() => { load(); }, []);
 
+  const [isAdding, setIsAdding] = useState(false);
+
   const add = async () => {
     if (!newName.trim()) return;
     try {
       await createMaterial(newName);
       setNewName('');
       load();
-      setSuccessMessage('Добавлено');
       setTimeout(() => setSuccessMessage(''), 2000);
     } catch (err) {
       alert('Ошибка добавления');
@@ -46,7 +47,9 @@ const AdminMaterials = () => {
           onChange={e => setNewName(e.target.value)}
           placeholder="Название материала"
         />
-        <button onClick={add} className="btn btn-small">Добавить</button>
+        <button onClick={add} className="btn btn-small" style={{ backgroundColor: isAdding ? '#22c55e' : '' }}>
+            {isAdding ? 'Добавлено' : 'Добавить'}
+        </button>
       </div>
       {successMessage && <div className="success-message">{successMessage}</div>}
       <ul className="admin-list">

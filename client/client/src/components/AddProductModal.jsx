@@ -63,17 +63,17 @@ const AddProductModal = ({ isOpen, onClose, onSuccess }) => {
       submitData.append('quantity', formData.quantity);
       if (imageFile) submitData.append('img', imageFile);
       
-      // Добавляем характеристики, если есть непустые
       const validInfo = infoFields.filter(f => f.title.trim() && f.description.trim());
-      if (validInfo.length) {
-        submitData.append('info', JSON.stringify(validInfo));
-      }
+        if (validInfo.length) {
+            const infoJson = JSON.stringify(validInfo);
+            console.log('Отправляемые характеристики:', infoJson); // для отладки
+            submitData.append('info', infoJson);
+        }
 
       await createProduct(submitData);
       alert('Товар успешно создан');
-      onSuccess(); // обновить список товаров
-      onClose(); // закрыть модалку
-      // Сброс формы
+      onSuccess();
+      onClose();
       setFormData({ name: '', price: '', size: '', productTypeId: '', materialId: '', quantity: 100, info: [] });
       setImageFile(null);
       setInfoFields([{ title: '', description: '' }]);

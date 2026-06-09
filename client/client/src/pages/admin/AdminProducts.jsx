@@ -27,7 +27,7 @@ const AdminProducts = () => {
   }, []);
 
   const handleDelete = async (id, e) => {
-    e.stopPropagation(); // чтобы не открывать редактирование при клике на кнопку удаления
+    e.stopPropagation();
     if (window.confirm('Удалить товар?')) {
       try {
         await deleteProduct(id);
