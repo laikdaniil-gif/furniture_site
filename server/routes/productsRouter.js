@@ -6,6 +6,6 @@ const checkRole = require('../middleware/checkRoleMiddleware')
 router.post('/', checkRole('ADMIN'), productsController.create)
 router.get('/', productsController.getAll)
 router.get('/:id', productsController.getOne)
-
+router.put('/:id', checkRole('ADMIN'), productsController.update);
 
 module.exports = router
