@@ -60,20 +60,18 @@ class ProductsController {
 
     async getAll(req, res) {
     let { materialId, productTypeId, limit, page } = req.query;
-    
     page = page || 1;
     limit = limit || 12;
     let offset = (page - 1) * limit;
-    
     let where = {};
     if (materialId) where.materialId = materialId;
     if (productTypeId) where.productTypeId = productTypeId;
-    
+
     const products = await Product.findAndCountAll({
         where,
         limit,
         offset,
-        include: [{ model: ProductInfo, as: 'info', required: false }]
+        include: [{ model: ProductInfo, as: 'info', required: false }]  // ← добавить
     });
     return res.json(products);
 }
