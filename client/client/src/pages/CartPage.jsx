@@ -5,17 +5,21 @@ import Loader from '../components/Loader';
 import { formatPrice } from '../utils/formatPrice';
 
 const CartPage = () => {
-  const { items, totalPrice, isLoading, fetchCart, removeItem } = useCartStore();
+  const { items, totalPrice, isLoading, fetchCart, removeItem, updateItemLocally } = useCartStore();
 
   useEffect(() => {
     fetchCart();
   }, [fetchCart]);
 
+  const handleQuantityChange = (cartProductId, newQuantity) => {
+    if (newQuantity < 1) return;
+    updateItemLocally(cartProductId, newQuantity);
+  };
+
   const handleRemove = async (id) => {
     if (window.confirm('Удалить товар из корзины?')) {
       try {
         await removeItem(id);
-        alert('Товар удалён');
       } catch (err) {
         alert('Ошибка удаления');
       }
@@ -57,9 +61,15 @@ const CartPage = () => {
               </div>
             </div>
             <div className="cart-item__controls">
-              <span className="cart-item__quantity">{item.quantity} шт.</span>
+              <input
+                type="number"
+                min="1"
+                value={item.quantity}
+                onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value) || 1)}
+                className="cart-quantity-input"
+              />
               <button onClick={() => handleRemove(item.id)} className="cart-item__remove">
-                <i className="fas fa-trash-alt"></i>
+                🗑️ Удалить
               </button>
             </div>
             <div className="cart-item__total">{formatPrice(item.product.price * item.quantity)}</div>

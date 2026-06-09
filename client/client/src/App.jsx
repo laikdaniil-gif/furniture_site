@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
@@ -39,6 +39,7 @@ function App() {
         </Route>
 
         <Route element={<AdminRoute />}>
+          <Route path="admin" element={<Navigate to="/admin/products" replace />} />
           <Route path="admin/products" element={<AdminProducts />} />
           <Route path="admin/types" element={<AdminTypes />} />
           <Route path="admin/materials" element={<AdminMaterials />} />

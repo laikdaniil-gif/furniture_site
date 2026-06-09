@@ -18,7 +18,7 @@ class ShoppingCartController {
             }
 
             let existing = await CartProduct.findOne({
-                where: { ShoppingCartId: cart.id, productId }
+                where: { shoppingCartId: cart.id, productId }
             });
             if (existing) {
                 if (existing.quantity !== undefined) {
@@ -29,7 +29,7 @@ class ShoppingCartController {
             }
 
             const cartItem = await CartProduct.create({
-                ShoppingCartId: cart.id,
+                shoppingCartId: cart.id,
                 productId,
                 quantity: 1
             });
@@ -41,25 +41,21 @@ class ShoppingCartController {
     }
 
     async getCartUser(req, res) {
-        try {
-            const user = req.user;
-            if (!user || !user.id) {
-                return res.status(401).json({ message: "Не авторизован" });
-            }
-            const cart = await ShoppingCart.findOne({ where: { userId: user.id } });
-            if (!cart) {
-                return res.json([]);
-            }
-            const items = await CartProduct.findAll({
-                where: { ShoppingCartId: cart.id },
-                include: [{ model: Product }]
-            });
-            return res.json(items);
-        } catch (e) {
-            console.error(e);
-            return res.status(500).json({ message: "Ошибка получения корзины" });
-        }
+    try {
+        const user = req.user;
+        if (!user?.id) return res.status(401).json([]);
+        const cart = await ShoppingCart.findOne({ where: { userId: user.id } });
+        if (!cart) return res.json([]);
+        const items = await CartProduct.findAll({
+            where: { shoppingCartId: cart.id },
+            include: [{ model: Product }]   // обязательно!
+        });
+        return res.json(items);
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ message: e.message });
     }
+}
 
     async deleteCart(req, res) {
         try {
@@ -73,7 +69,46 @@ class ShoppingCartController {
             console.error(e);
             return res.status(500).json({ message: "Ошибка удаления" });
         }
+}
+
+    async updateQuantity(req, res) {
+    try {
+        const { id } = req.params;          // id записи CartProduct
+        const { quantity } = req.body;
+        const user = req.user;
+
+        if (!user?.id) {
+            return res.status(401).json({ message: "Не авторизован" });
+        }
+        if (!quantity || quantity < 1) {
+            return res.status(400).json({ message: "Количество должно быть не менее 1" });
+        }
+
+        // Находим позицию корзины
+        const cartItem = await CartProduct.findByPk(id);
+        if (!cartItem) {
+            return res.status(404).json({ message: "Позиция не найдена" });
+        }
+
+        // Проверяем, принадлежит ли позиция текущему пользователю
+        const cart = await ShoppingCart.findOne({ where: { userId: user.id } });
+        if (!cart || cartItem.shoppingCartId !== cart.id) {
+            return res.status(403).json({ message: "Нет доступа к этой позиции" });
+        }
+
+        cartItem.quantity = quantity;
+        await cartItem.save();
+
+        // Возвращаем обновлённую позицию (можно также вернуть всю корзину)
+        const updated = await CartProduct.findByPk(id, {
+            include: [{ model: Product }]
+        });
+        return res.json(updated);
+    } catch (e) {
+        console.error("updateQuantity error:", e);
+        return res.status(500).json({ message: e.message });
     }
+}
 }
 
 module.exports = new ShoppingCartController();

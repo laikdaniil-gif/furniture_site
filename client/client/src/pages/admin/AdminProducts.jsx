@@ -1,13 +1,12 @@
+// src/pages/Admin/AdminProducts.jsx
 import { useState, useEffect } from 'react';
-import { fetchProducts, deleteProduct, createProduct } from '../../api/products';
-import { fetchTypes } from '../../api/types';
-import { fetchMaterials } from '../../api/materials';
+import { fetchProducts, deleteProduct } from '../../api/products';
+import AddProductModal from '../../components/AddProductModal';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
-  const [types, setTypes] = useState([]);
-  const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const loadProducts = async () => {
     setLoading(true);
@@ -23,8 +22,6 @@ const AdminProducts = () => {
 
   useEffect(() => {
     loadProducts();
-    fetchTypes().then(res => setTypes(res.data));
-    fetchMaterials().then(res => setMaterials(res.data));
   }, []);
 
   const handleDelete = async (id) => {
@@ -39,48 +36,18 @@ const AdminProducts = () => {
     }
   };
 
-  const handleAddProduct = async () => {
-    const name = prompt('Название товара');
-    if (!name) return;
-    const price = prompt('Цена');
-    const size = prompt('Размер (например, 35мм)');
-    const typeId = prompt('ID категории (число)');
-    const materialId = prompt('ID материала (число)');
-    
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('price', price);
-    formData.append('quantity', 100);
-    formData.append('size', size || 'стандарт');
-    formData.append('productTypeId', typeId);
-    formData.append('materialId', materialId);
-    
-    // Запрашиваем файл изображения
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*';
-    fileInput.onchange = async (e) => {
-      formData.append('img', e.target.files[0]);
-      try {
-        await createProduct(formData);
-        alert('Товар создан');
-        loadProducts();
-      } catch (err) {
-        alert('Ошибка создания товара');
-      }
-    };
-    fileInput.click();
-  };
-
-  if (loading) return <div className="loader"></div>;
-
   return (
     <div>
       <div className="admin-actions">
-        <button onClick={handleAddProduct} className="btn btn-small">
+        <button onClick={() => setIsModalOpen(true)} className="btn btn-small">
           <i className="fas fa-plus"></i> Добавить товар
         </button>
       </div>
+      <AddProductModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={loadProducts}
+      />
       <div className="table-wrapper">
         <table className="admin-table">
           <thead>
@@ -92,11 +59,7 @@ const AdminProducts = () => {
                 <td>{p.id}</td>
                 <td>{p.name}</td>
                 <td>{p.price.toLocaleString()} ₽</td>
-                <td>
-                  <button onClick={() => handleDelete(p.id)} className="text-red-500">
-                    <i className="fas fa-trash"></i>
-                  </button>
-                </td>
+                <td><button onClick={() => handleDelete(p.id)} className="text-red-500"><i className="fas fa-trash"></i></button></td>
               </tr>
             ))}
           </tbody>

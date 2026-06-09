@@ -25,9 +25,9 @@ const ShoppingCart = sequalize.define('shopping_cart', {
 })
 
 const CartProduct = sequalize.define('cart_product', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     quantity: { type: DataTypes.INTEGER, defaultValue: 1, allowNull: false }
-})
+});
 
 const Product = sequalize.define('product', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
@@ -70,8 +70,8 @@ OrderProduct.belongsTo(Order);
 Order.hasOne(User);
 User.belongsTo(Order);
 
-ShoppingCart.hasMany(CartProduct)
-CartProduct.belongsTo(ShoppingCart)
+ShoppingCart.hasMany(CartProduct, { foreignKey: 'shoppingCartId' });
+CartProduct.belongsTo(ShoppingCart, { foreignKey: 'shoppingCartId' });
 
 CartProduct.hasOne(ProductInfo)
 ProductInfo.belongsTo(CartProduct)
@@ -82,8 +82,8 @@ Product.belongsTo(ProductType)
 Material.hasMany(Product)
 Product.belongsTo(Product)
 
-Product.hasMany(CartProduct)
-CartProduct.belongsTo(Product)
+Product.hasMany(CartProduct, { foreignKey: 'productId' });
+CartProduct.belongsTo(Product, { foreignKey: 'productId' });
 
 Product.hasMany(ProductInfo, {as: 'info'})
 ProductInfo.belongsTo(Product)
