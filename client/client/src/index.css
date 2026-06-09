@@ -67,6 +67,22 @@ body {
   color: #2563eb;
 }
 
+.nav-link {
+    text-decoration: none;
+    color: #4b5563;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+    padding: 0;
+}
+
+.nav-link:hover {
+    color: #2563eb;
+}
+
 .cart-badge {
   background-color: #2563eb;
   color: white;

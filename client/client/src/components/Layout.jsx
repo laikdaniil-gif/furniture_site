@@ -24,7 +24,7 @@ const Layout = () => {
       <header className="header">
         <div className="container">
           <div className="header__inner">
-            <Link to="/" className="logo"><i className="fas fa-tools"></i> ФУРНИТУРА.ПРО</Link>
+            <Link to="/" className="logo"><i className="fas fa-tools"></i> WoodenMaster</Link>
             <nav className="nav">
               <Link to="/" className="nav-link">Главная</Link>
               <Link to="/catalog" className="nav-link">Каталог</Link>
@@ -61,7 +61,7 @@ const Layout = () => {
             ) : (
               <>
                 {user?.role === 'ADMIN' && <Link to="/admin" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Админ</Link>}
-                <button onClick={handleLogout} className="nav-link">Выйти</button>
+                <button onClick={handleLogout} className="nav-link bg-transparent border-none cursor-pointer">Выйти</button>
               </>
             )}
           </div>
