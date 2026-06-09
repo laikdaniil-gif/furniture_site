@@ -10,13 +10,19 @@ const OrdersPage = () => {
   const { user, isAuthenticated } = useAuthStore();
 
   useEffect(() => {
-    if (!isAuthenticated) return;
     const loadOrders = async () => {
+      if (!isAuthenticated || !user?.id) {
+        setLoading(false);
+        return;
+      }
       try {
-        const { data } = await getUserOrders(user.id);
-        setOrders(data);
+        const response = await getUserOrders(user.id);
+        // Ответ может быть в response.data или просто response (если перехватчик не обработан)
+        const ordersData = response.data || response;
+        setOrders(ordersData);
       } catch (err) {
-        alert('Ошибка загрузки заказов');
+        console.error('Ошибка загрузки заказов:', err);
+        alert('Ошибка загрузки заказов: ' + (err.response?.data?.message || err.message));
       } finally {
         setLoading(false);
       }
@@ -25,6 +31,10 @@ const OrdersPage = () => {
   }, [user, isAuthenticated]);
 
   if (loading) return <Loader />;
+
+  if (!isAuthenticated) {
+    return <div className="text-center">Пожалуйста, войдите, чтобы увидеть заказы</div>;
+  }
 
   if (orders.length === 0) {
     return <div className="text-center">У вас пока нет заказов</div>;
@@ -38,17 +48,12 @@ const OrdersPage = () => {
           <div key={order.id} className="order-card">
             <div className="order-card__header">
               <span>Заказ №{order.id}</span>
-              <span className="text-sm text-gray-500">
-                {new Date(order.createdAt).toLocaleString()}
-              </span>
+              <span>{new Date(order.createdAt).toLocaleString()}</span>
             </div>
-            <p className="order-card__status">
-              Статус: {
-                order.status === 1 ? '🟡 Новый' :
-                order.status === 2 ? '🟢 В обработке' :
-                '✅ Доставлен'
-              }
-            </p>
+            <p>Статус: {
+              order.status === 1 ? '🟡 Новый' :
+              order.status === 2 ? '🟢 В обработке' : '✅ Доставлен'
+            }</p>
             <p>Телефон: {order.phone} | Адрес: {order.address}</p>
             <p className="order-card__total">Сумма: {formatPrice(order.total || 0)}</p>
             <details>
