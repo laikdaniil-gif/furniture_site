@@ -63,12 +63,11 @@ const AddProductModal = ({ isOpen, onClose, onSuccess }) => {
       submitData.append('quantity', formData.quantity);
       if (imageFile) submitData.append('img', imageFile);
       
-      const validInfo = infoFields.filter(f => f.title.trim() && f.description.trim());
+    const validInfo = infoFields.filter(f => f.title.trim() && f.description.trim());
         if (validInfo.length) {
-            const infoJson = JSON.stringify(validInfo);
-            console.log('Отправляемые характеристики:', infoJson); // для отладки
-            submitData.append('info', infoJson);
-        }
+            const infoString = JSON.stringify(validInfo);   // ← вызываем с аргументом
+            submitData.append('info', infoString);          // ← передаём строку
+}
 
       await createProduct(submitData);
       alert('Товар успешно создан');
@@ -82,6 +81,16 @@ const AddProductModal = ({ isOpen, onClose, onSuccess }) => {
     } finally {
       setLoading(false);
     }
+
+    console.log('=== ОТЛАДКА ===');
+console.log('infoFields:', infoFields);
+console.log('Тип infoFields:', typeof infoFields, Array.isArray(infoFields));
+const validInfo = infoFields.filter(f => f.title?.trim() && f.description?.trim());
+console.log('validInfo:', validInfo);
+const infoString = JSON.stringify(validInfo);
+console.log('infoString (тип):', typeof infoString);
+console.log('infoString (значение):', infoString);
+submitData.append('info', infoString);
   };
 
   if (!isOpen) return null;

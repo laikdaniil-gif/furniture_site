@@ -6,37 +6,57 @@ const { info } = require('console');
 
 class ProductsController {
     async create(req, res, next) {
-        try {
-            let {name, price, quantity, size, productTypeId, materialId, productId} = req.body
-                const {img} = req.files
-                let fileName = uuid.v4() + ".jpg"
-                img.mv(path.resolve(__dirname, '..', 'static', fileName))
-                
-                const product = await Product.create({
-                    name,
-                    price,
-                    quantity,
-                    size,
-                    productTypeId,
-                    materialId,
-                    img:fileName,
-                    productId
-        })
-                if (info) {
-                    info = JSON.parse(info)
-                    info.forEach(i =>
-                        ProductInfo.create({
-                            title: i.title,
-                            description: i.description,
-                            productId: product.id,
-                        })
-                    )
-                }
-
-        return res.json(product)
+    try {
+        let { name, price, quantity, size, productTypeId, materialId, productId, info } = req.body;
+        const { img } = req.files;
+        let fileName = uuid.v4() + ".jpg";
+        img.mv(path.resolve(__dirname, '..', 'static', fileName));
+        
+        const product = await Product.create({
+            name, price, quantity, size, productTypeId, materialId,
+            img: fileName,
+            productId
+        });
+        
+        if (info) {
+            let parsedInfo;
+            if (typeof info === 'string') {
+                parsedInfo = JSON.parse(info);
+            } else if (Array.isArray(info)) {
+                parsedInfo = info;
+            } else {
+                return next(ApiError.badRequest('Некорректный формат характеристик'));
+            }
+            for (let i of parsedInfo) {
+                await ProductInfo.create({
+                    title: i.title,
+                    description: i.description,
+                    productId: product.id
+                });
+            }
+        }
+        return res.json(product);
     } catch(e) {
-        next(ApiError.badRequest(e.message))
-    }}
+        next(ApiError.badRequest(e.message));
+    }
+}
+
+    async delete(req, res, next) {
+    try {
+        const { id } = req.params;
+        const product = await Product.findByPk(id);
+        if (!product) {
+            return next(ApiError.badRequest('Товар не найден'));
+        }
+        // Удаляем связанные характеристики (если есть)
+        await ProductInfo.destroy({ where: { productId: id } });
+        // Удаляем сам товар
+        await product.destroy();
+        return res.json({ message: 'Товар удалён' });
+    } catch(e) {
+        next(ApiError.badRequest(e.message));
+    }
+}
 
     async getAll(req, res) {
     let { materialId, productTypeId, limit, page } = req.query;
@@ -94,16 +114,18 @@ class ProductsController {
         await product.save();
         
         if (info) {
-            info = JSON.parse(info);
-            await ProductInfo.destroy({ where: { productId: id } });
-            for (let i of info) {
-                await ProductInfo.create({
-                    title: i.title,
-                    description: i.description,
-                    productId: product.id
-                });
-            }
+            if (typeof info === 'string') {
+                try {
+                    info = JSON.parse(info);
+                } catch (e) {
+                    console.error('Ошибка парсинга info:', e);
+                    info = null;
+                }
         }
+        if (Array.isArray(info)) {
+        // очистка и создание характеристик
+    }
+}
         
         return res.json(product);
     } catch(e) {

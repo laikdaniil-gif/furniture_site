@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
 import { fetchProducts, deleteProduct } from '../../api/products';
 import AddProductModal from '../../components/AddProductModal';
-import EditProductModal from '../../components/EditProductModal';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deletingId, setDeletingId] = useState(null); // отслеживаем удаляемый товар
 
   const loadProducts = async () => {
     setLoading(true);
@@ -26,40 +24,31 @@ const AdminProducts = () => {
     loadProducts();
   }, []);
 
-  const handleDelete = async (id, e) => {
-    e.stopPropagation();
-    if (window.confirm('Удалить товар?')) {
-      try {
-        await deleteProduct(id);
-        alert('Товар удалён');
-        loadProducts();
-      } catch (err) {
-        alert('Ошибка удаления');
-      }
+  const handleDelete = async (id) => {
+    setDeletingId(id); // сразу показываем кнопку в состоянии удаления
+    try {
+      await deleteProduct(id);
+      // Удаляем товар из списка через 0.5 сек (чтобы пользователь увидел "удалено")
+      setTimeout(() => {
+        setProducts(prev => prev.filter(p => p.id !== id));
+        setDeletingId(null);
+      }, 500);
+    } catch (err) {
+      alert('Ошибка удаления');
+      setDeletingId(null);
     }
-  };
-
-  const handleRowClick = (product) => {
-    setSelectedProduct(product);
-    setIsEditModalOpen(true);
   };
 
   return (
     <div>
       <div className="admin-actions">
-        <button onClick={() => setIsAddModalOpen(true)} className="btn btn-small">
+        <button onClick={() => setIsModalOpen(true)} className="btn btn-small">
           <i className="fas fa-plus"></i> Добавить товар
         </button>
       </div>
       <AddProductModal 
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onSuccess={loadProducts}
-      />
-      <EditProductModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         onSuccess={loadProducts}
       />
       <div className="table-wrapper">
@@ -74,23 +63,17 @@ const AdminProducts = () => {
           </thead>
           <tbody>
             {products.map(p => (
-              <tr 
-                key={p.id} 
-                onClick={() => handleRowClick(p)}
-                style={{ cursor: 'pointer' }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = ''}
-              >
+              <tr key={p.id}>
                 <td>{p.id}</td>
                 <td>{p.name}</td>
                 <td>{p.price.toLocaleString()} ₽</td>
                 <td>
-                  <button 
-                    onClick={(e) => handleDelete(p.id, e)} 
-                    className="delete-btn"
-                    style={{ background: '#D3D3D3', color: 'Black', border: '1px', padding: '0.25rem 0.75rem', borderRadius: '0.375rem', cursor: 'pointer' }}
+                  <button
+                    onClick={() => handleDelete(p.id)}
+                    className={`delete-btn ${deletingId === p.id ? 'deleting' : ''}`}
+                    disabled={deletingId === p.id}
                   >
-                    🗑️ Удалить
+                    {deletingId === p.id ? 'Удалено' : '🗑️ Удалить'}
                   </button>
                 </td>
               </tr>

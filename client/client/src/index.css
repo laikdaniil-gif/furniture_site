@@ -227,6 +227,22 @@ body {
   font-size: 0.875rem;
 }
 
+.delete-btn:hover:not(:disabled) {
+  background-color: #dc2626;
+  transform: scale(1.02);
+}
+
+.delete-btn:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.delete-btn.deleting {
+  background-color: #b91c1c; /* тёмно-красный */
+}
+
+
+
 /* Домашка */
 .hero {
   text-align: center;
