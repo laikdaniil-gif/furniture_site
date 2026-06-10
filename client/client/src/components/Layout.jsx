@@ -73,7 +73,7 @@ const Layout = () => {
         </div>
       </main>
       <footer className="footer">
-        <div className="container">© 2025 ФУРНИТУРА.ПРО — API-интеграция</div>
+        <div className="container">© 2026 WOODENMASTER — API-интеграция</div>
       </footer>
     </>
   );

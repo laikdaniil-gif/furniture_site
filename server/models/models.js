@@ -16,7 +16,7 @@ const Order = sequalize.define('order', {
     status:{type: DataTypes.INTEGER, defaultValue: 1}
 })
 
-const OrderProduct = sequalize.define('order_device', {
+const OrderProduct = sequalize.define('order_product', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     orderId: { type: DataTypes.INTEGER, allowNull: false },
     productId: { type: DataTypes.INTEGER, allowNull: false },
@@ -55,7 +55,7 @@ const Material = sequalize.define('material', {
 const ProductInfo = sequalize.define('product_info', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     title: {type: DataTypes.STRING, unique: true, allowNull: false},
-    description: {type: DataTypes.STRING},
+    description: {type: DataTypes.TEXT},
 })
 
 const MaterialProductType = sequalize.define('material_product_type', {
@@ -68,8 +68,8 @@ ShoppingCart.belongsTo(User)
 User.hasMany(Order);
 Order.belongsTo(User);
 
-Order.hasMany(OrderProduct);
-OrderProduct.belongsTo(Order);
+Order.hasMany(OrderProduct, { foreignKey: 'orderId' });
+OrderProduct.belongsTo(Order, { foreignKey: 'orderId' });
 
 Order.hasOne(User);
 User.belongsTo(Order);
@@ -92,8 +92,8 @@ CartProduct.belongsTo(Product, { foreignKey: 'productId' });
 Product.hasMany(ProductInfo, {as: 'info'})
 ProductInfo.belongsTo(Product)
 
-Product.hasMany(OrderProduct);
-OrderProduct.belongsTo(Product);
+Product.hasMany(OrderProduct, { foreignKey: 'productId' });
+OrderProduct.belongsTo(Product, { foreignKey: 'productId' });
 
 ProductType.belongsToMany(Material, {through: MaterialProductType})
 Material.belongsToMany(ProductType, {through: MaterialProductType})

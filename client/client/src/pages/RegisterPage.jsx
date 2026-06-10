@@ -71,10 +71,6 @@ const RegisterPage = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-          <select value={role} onChange={(e) => setRole(e.target.value)} className="form-select">
-            <option value="USER">Покупатель</option>
-            <option value="ADMIN">Администратор</option>
-          </select>
           <button type="submit" className="btn btn-dark">Зарегистрироваться</button>
           {error && <div className="auth-message">{error}</div>}
         </form>

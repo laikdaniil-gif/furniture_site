@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchProductById } from '../api/products';
 import useCartStore from '../store/useCartStore';
+import useAuthStore from '../store/useAuthStore';   // ← импорт
 import Loader from '../components/Loader';
 import { formatPrice } from '../utils/formatPrice';
+import { getImageUrl } from '../utils/getImageUrl';
 
 const ProductPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const addItem = useCartStore(state => state.addItem);
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated); // ← проверка
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +31,10 @@ const ProductPage = () => {
   }, [id, navigate]);
 
   const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      alert('Пожалуйста, войдите в аккаунт, чтобы добавить товар в корзину');
+      return;
+    }
     try {
       await addItem(product.id);
       alert('Товар добавлен в корзину');
@@ -42,11 +49,7 @@ const ProductPage = () => {
   return (
     <div className="product-detail">
       <div className="product-detail__image">
-        <img
-          src={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/static/${product.img}`}
-          alt={product.name}
-          onError={(e) => (e.target.src = 'https://placehold.co/600x400?text=Фурнитура')}
-        />
+        <img src={getImageUrl(product.img)} alt={product.name} onError={(e) => (e.target.src = 'https://placehold.co/600x400?text=Фурнитура')} />
       </div>
       <div className="product-detail__info">
         <h1>{product.name}</h1>

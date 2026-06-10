@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import useCartStore from '../store/useCartStore';
 import Loader from '../components/Loader';
 import { formatPrice } from '../utils/formatPrice';
+import { getImageUrl } from '../utils/getImageUrl';
 
 const CartPage = () => {
   const { items, totalPrice, isLoading, fetchCart, removeItem, updateItemLocally } = useCartStore();
@@ -49,12 +50,7 @@ const CartPage = () => {
         {items.map(item => (
           <div key={item.id} className="cart-item">
             <div className="cart-item__info">
-              <img
-                src={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/static/${item.product.img}`}
-                alt={item.product.name}
-                className="cart-item__img"
-                onError={(e) => (e.target.src = 'https://placehold.co/600x400?text=Фурнитура')}
-              />
+              <img src={getImageUrl(item.product.img)} className="cart-item__img" onError={(e) => (e.target.src = 'https://placehold.co/600x400?text=Фурнитура')} />
               <div className="cart-item__details">
                 <h4>{item.product.name}</h4>
                 <p>{formatPrice(item.product.price)}</p>

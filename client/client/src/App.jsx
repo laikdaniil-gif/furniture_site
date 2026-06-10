@@ -15,6 +15,7 @@ import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminProducts from './pages/Admin/AdminProducts';
 import AdminTypes from './pages/Admin/AdminTypes';
 import AdminMaterials from './pages/Admin/AdminMaterials';
+import AdminOrders from './pages/Admin/AdminOrders';
 import useAuthStore from './store/useAuthStore';
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           <Route path="admin" element={<AdminDashboard />}>
             <Route index element={<Navigate to="products" replace />} />
             <Route path="products" element={<AdminProducts />} />
+            <Route path="orders" element={<AdminOrders />} />   {/* ← исправлено */}
             <Route path="types" element={<AdminTypes />} />
             <Route path="materials" element={<AdminMaterials />} />
           </Route>

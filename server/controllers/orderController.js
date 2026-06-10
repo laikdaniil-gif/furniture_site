@@ -47,12 +47,17 @@ class OrderController {
 }
 
     async getAll(req, res) {
-        const orders = await Order.findAll();
-        return res.json(orders);
-    }
+    const orders = await Order.findAll({
+        include: [{
+            model: OrderProduct,
+            include: [Product]
+        }]
+    });
+    return res.json(orders);
+}
 
 async getUserOrder(req, res) {
-    const { id } = req.params; // id пользователя
+    const { id } = req.params;
     const orders = await Order.findAll({
         where: { userId: id },
         include: [{
@@ -86,6 +91,16 @@ async getUserOrder(req, res) {
         await order.save();
         return res.json(order);
     }
+
+    async deleteOrder(req, res) {
+    const { id } = req.params;
+    const order = await Order.findByPk(id);
+    if (!order) return res.status(404).json({ message: "Заказ не найден" });
+    // Удаляем связанные записи order_products
+    await OrderProduct.destroy({ where: { orderId: id } });
+    await order.destroy();
+    return res.json({ message: "Заказ удалён" });
+}
 }
 
 module.exports = new OrderController();

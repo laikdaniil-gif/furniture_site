@@ -11,7 +11,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess }) => {
     productTypeId: '',
     materialId: '',
     quantity: 100,
-    info: [] // массив характеристик { title, description }
+    info: []
   });
   const [imageFile, setImageFile] = useState(null);
   const [types, setTypes] = useState([]);
@@ -21,7 +21,6 @@ const AddProductModal = ({ isOpen, onClose, onSuccess }) => {
 
   useEffect(() => {
     if (isOpen) {
-      // Загружаем типы и материалы при открытии
       fetchTypes().then(res => setTypes(res.data));
       fetchMaterials().then(res => setMaterials(res.data));
     }
@@ -65,8 +64,8 @@ const AddProductModal = ({ isOpen, onClose, onSuccess }) => {
       
     const validInfo = infoFields.filter(f => f.title.trim() && f.description.trim());
         if (validInfo.length) {
-            const infoString = JSON.stringify(validInfo);   // ← вызываем с аргументом
-            submitData.append('info', infoString);          // ← передаём строку
+            const infoString = JSON.stringify(validInfo);
+            submitData.append('info', infoString);
 }
 
       await createProduct(submitData);
@@ -82,15 +81,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess }) => {
       setLoading(false);
     }
 
-    console.log('=== ОТЛАДКА ===');
-console.log('infoFields:', infoFields);
-console.log('Тип infoFields:', typeof infoFields, Array.isArray(infoFields));
-const validInfo = infoFields.filter(f => f.title?.trim() && f.description?.trim());
-console.log('validInfo:', validInfo);
-const infoString = JSON.stringify(validInfo);
-console.log('infoString (тип):', typeof infoString);
-console.log('infoString (значение):', infoString);
-submitData.append('info', infoString);
+    
   };
 
   if (!isOpen) return null;

@@ -9,5 +9,6 @@ router.get('/', checkRole('ADMIN'), orderController.getAll);
 router.get('/user/:id', authMiddleware, orderController.getUserOrder);
 router.get('/:id', authMiddleware, orderController.getOne);
 router.put('/:id', checkRole('ADMIN'), orderController.updateUserOrder);
+router.delete('/:id', checkRole('ADMIN'), orderController.deleteOrder);
 
 module.exports = router;

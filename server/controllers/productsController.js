@@ -10,14 +10,14 @@ class ProductsController {
         let { name, price, quantity, size, productTypeId, materialId, productId, info } = req.body;
         const { img } = req.files;
         let fileName = uuid.v4() + ".jpg";
-        img.mv(path.resolve(__dirname, '..', 'static', fileName));
-        
+        await img.mv(path.resolve(__dirname, '..', 'static', fileName));
+
         const product = await Product.create({
             name, price, quantity, size, productTypeId, materialId,
             img: fileName,
             productId
         });
-        
+
         if (info) {
             let parsedInfo;
             if (typeof info === 'string') {
@@ -27,14 +27,15 @@ class ProductsController {
             } else {
                 return next(ApiError.badRequest('Некорректный формат характеристик'));
             }
-            for (let i of parsedInfo) {
+            for (let item of parsedInfo) {
                 await ProductInfo.create({
-                    title: i.title,
-                    description: i.description,
+                    title: item.title,
+                    description: item.description,
                     productId: product.id
                 });
             }
         }
+
         return res.json(product);
     } catch(e) {
         next(ApiError.badRequest(e.message));

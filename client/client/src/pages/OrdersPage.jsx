@@ -32,7 +32,8 @@ const OrdersPage = () => {
             <h2 className="section-title">Мои заказы</h2>
             <div className="orders-list">
                 {orders.map(order => {
-                    const total = order.OrderProducts?.reduce((sum, op) => sum + (op.priceAtPurchase * op.quantity), 0) || 0;
+                    // Используем snake_case поля из ответа сервера
+                    const total = order.order_products?.reduce((sum, op) => sum + (op.priceAtPurchase * op.quantity), 0) || 0;
                     return (
                         <div key={order.id} className="order-card">
                             <div className="order-card__header">
@@ -45,9 +46,9 @@ const OrdersPage = () => {
                             <details>
                                 <summary>Состав заказа</summary>
                                 <ul>
-                                    {order.OrderProducts?.map(op => (
+                                    {order.order_products?.map(op => (
                                         <li key={op.id}>
-                                            {op.Product?.name} x {op.quantity} — {formatPrice(op.priceAtPurchase * op.quantity)}
+                                            {op.product?.name} x {op.quantity} — {formatPrice(op.priceAtPurchase * op.quantity)}
                                         </li>
                                     ))}
                                 </ul>
