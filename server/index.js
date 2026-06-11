@@ -11,26 +11,23 @@ const path = require('path');
 
 const app = express();
 
-// 1. Глобальный CORS для всех запросов
+
 app.use(cors());
 app.use(express.json());
 app.use(fileUpload({}));
 
-// 2. Middleware для статических файлов (устанавливает нужные заголовки)
+
 app.use((req, res, next) => {
   if (req.path.startsWith('/static/')) {
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    // Можно добавить кэширование
     res.setHeader('Cache-Control', 'public, max-age=86400');
   }
   next();
 });
 
-// 3. Раздача статических файлов
 app.use('/static', express.static(path.join(__dirname, 'static')));
 
-// 4. API маршруты
 app.use('/api', router);
 
 // 5. Обработчик ошибок (последний)
