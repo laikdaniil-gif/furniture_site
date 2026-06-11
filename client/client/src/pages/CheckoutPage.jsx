@@ -7,7 +7,7 @@ import useAuthStore from '../store/useAuthStore';
 const CheckoutPage = () => {
   const [form, setForm] = useState({ phone: '', postcode: '', address: '' });
   const [loading, setLoading] = useState(false);
-  const [buttonStatus, setButtonStatus] = useState('idle'); // idle, success, error
+  const [buttonStatus, setButtonStatus] = useState('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const { fetchCart } = useCartStore();
   const { user } = useAuthStore();

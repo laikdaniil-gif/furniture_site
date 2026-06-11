@@ -35,7 +35,6 @@ const EditProductModal = ({ isOpen, onClose, product, onSuccess }) => {
         setInfoFields([{ title: '', description: '' }]);
       }
       
-      // Загружаем списки типов и материалов
       fetchTypes().then(res => setTypes(res.data));
       fetchMaterials().then(res => setMaterials(res.data));
     }

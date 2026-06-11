@@ -3,7 +3,7 @@ import useProductStore from '../store/useProductStore';
 import ProductCard from '../components/ProductCard';
 import Loader from '../components/Loader';
 import { fetchTypes } from '../api/types';
-import { fetchMaterials } from '../api/materials'; // ← правильный импорт
+import { fetchMaterials } from '../api/materials';
 
 const CatalogPage = () => {
   const { products, loading, filters, setFilter, loadProducts } = useProductStore();

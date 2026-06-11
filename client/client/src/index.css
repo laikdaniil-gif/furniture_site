@@ -238,7 +238,7 @@ body {
 }
 
 .delete-btn.deleting {
-  background-color: #b91c1c; /* тёмно-красный */
+  background-color: #b91c1c;
 }
 
 .delete-order-btn {
@@ -340,8 +340,8 @@ body {
 }
 .product-detail__image img {
   max-width: 100%;
-  max-height: 400px; /* ограничиваем высоту */
-  object-fit: contain; /* чтобы всё изображение помещалось без обрезки */
+  max-height: 400px;
+  object-fit: contain;
   display: block;
   margin: 0 auto;
 }
@@ -364,11 +364,11 @@ body {
 }
 .product-card img {
   width: 100%;
-  height: 220px;        /* фиксированная высота */
-  object-fit: contain;  /* или cover – зависит от желаемого эффекта */
-  background-color: #f8f9fa; /* фон для пустых мест */
+  height: 220px;
+  object-fit: contain;
+  background-color: #f8f9fa;
   border-radius: 8px 8px 0 0;
-  padding: 8px;          /* небольшие отступы внутри */
+  padding: 8px;
 }
 .product-card__content { padding: 1rem; }
 .product-card__title { font-weight: 600; font-size: 1.125rem; }

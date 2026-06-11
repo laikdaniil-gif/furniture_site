@@ -5,7 +5,6 @@ export const getImageUrl = (filename) => {
     console.warn('getImageUrl: filename is empty');
     return 'https://placehold.co/600x400?text=Нет+изображения';
   }
-  // Убираем возможные лишние пути из filename
   const cleanFilename = filename.split('/').pop();
   return `${API_BASE}/static/${cleanFilename}`;
 };

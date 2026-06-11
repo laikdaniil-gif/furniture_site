@@ -6,7 +6,7 @@ const AdminProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [deletingId, setDeletingId] = useState(null); // отслеживаем удаляемый товар
+  const [deletingId, setDeletingId] = useState(null);
 
   const loadProducts = async () => {
     setLoading(true);
@@ -25,10 +25,9 @@ const AdminProducts = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    setDeletingId(id); // сразу показываем кнопку в состоянии удаления
+    setDeletingId(id);
     try {
       await deleteProduct(id);
-      // Удаляем товар из списка через 0.5 сек (чтобы пользователь увидел "удалено")
       setTimeout(() => {
         setProducts(prev => prev.filter(p => p.id !== id));
         setDeletingId(null);

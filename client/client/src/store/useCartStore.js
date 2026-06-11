@@ -46,10 +46,9 @@ const useCartStore = create((set, get) => ({
     const totalPrice = updatedItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
     set({ items: updatedItems, totalCount, totalPrice });
     
-    // Асинхронно синхронизируем с сервером (не блокируем UI)
     updateCartItemQuantity(cartProductId, newQuantity).catch(err => {
       console.error('Ошибка синхронизации количества:', err);
-      get().fetchCart(); // восстанавливаем состояние из БД при ошибке
+      get().fetchCart();
     });
   },
 }));

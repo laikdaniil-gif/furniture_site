@@ -28,7 +28,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        {/* Публичные маршруты */}
+
         <Route index element={<HomePage />} />
         <Route path="catalog" element={<CatalogPage />} />
         <Route path="product/:id" element={<ProductPage />} />
@@ -36,18 +36,16 @@ function App() {
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
 
-        {/* Приватные маршруты (только для авторизованных) */}
         <Route element={<PrivateRoute />}>
           <Route path="checkout" element={<CheckoutPage />} />
           <Route path="orders" element={<OrdersPage />} />
         </Route>
 
-        {/* Админские маршруты (только для ADMIN) */}
         <Route element={<AdminRoute />}>
           <Route path="admin" element={<AdminDashboard />}>
             <Route index element={<Navigate to="products" replace />} />
             <Route path="products" element={<AdminProducts />} />
-            <Route path="orders" element={<AdminOrders />} />   {/* ← исправлено */}
+            <Route path="orders" element={<AdminOrders />} />
             <Route path="types" element={<AdminTypes />} />
             <Route path="materials" element={<AdminMaterials />} />
           </Route>
