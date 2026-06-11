@@ -25,11 +25,9 @@ const CheckoutPage = () => {
     try {
       await createOrder(form.phone, form.postcode, form.address);
       
-      // Успех: меняем кнопку на зелёную с текстом "Заказ оформлен"
       setButtonStatus('success');
-      await fetchCart(); // очищаем корзину
+      await fetchCart();
       
-      // Через 2 секунды перенаправляем на страницу заказов
       setTimeout(() => {
         navigate('/orders');
       }, 1500);
@@ -37,14 +35,12 @@ const CheckoutPage = () => {
       const msg = err.response?.data?.message || 'Ошибка оформления заказа';
       setErrorMessage(msg);
       setButtonStatus('error');
-      // Красное мигание кнопки на 1 секунду
       setTimeout(() => setButtonStatus('idle'), 1000);
     } finally {
       setLoading(false);
     }
   };
 
-  // Определяем класс кнопки в зависимости от статуса
   const getButtonClass = () => {
     if (buttonStatus === 'success') return 'btn btn-success';
     if (buttonStatus === 'error') return 'btn btn-error';

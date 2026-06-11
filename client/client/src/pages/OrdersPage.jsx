@@ -32,7 +32,6 @@ const OrdersPage = () => {
             <h2 className="section-title">Мои заказы</h2>
             <div className="orders-list">
                 {orders.map(order => {
-                    // Используем snake_case поля из ответа сервера
                     const total = order.order_products?.reduce((sum, op) => sum + (op.priceAtPurchase * op.quantity), 0) || 0;
                     return (
                         <div key={order.id} className="order-card">

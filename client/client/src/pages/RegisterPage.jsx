@@ -31,7 +31,6 @@ const RegisterPage = () => {
       setSuccess(true);
       setTimeout(() => navigate('/'), 1500);
     } catch (err) {
-      // Показываем конкретное сообщение от сервера
       const message = err.response?.data?.message || 'Ошибка регистрации. Попробуйте другой email.';
       setError(message);
     }

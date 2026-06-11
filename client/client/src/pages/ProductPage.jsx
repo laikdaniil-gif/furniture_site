@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchProductById } from '../api/products';
 import useCartStore from '../store/useCartStore';
-import useAuthStore from '../store/useAuthStore';   // ← импорт
+import useAuthStore from '../store/useAuthStore';
 import Loader from '../components/Loader';
 import { formatPrice } from '../utils/formatPrice';
 import { getImageUrl } from '../utils/getImageUrl';
@@ -12,7 +12,7 @@ const ProductPage = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const addItem = useCartStore(state => state.addItem);
-  const isAuthenticated = useAuthStore(state => state.isAuthenticated); // ← проверка
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const navigate = useNavigate();
 
   useEffect(() => {
