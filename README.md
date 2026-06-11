@@ -45,55 +45,49 @@ WoodenMaster — интернет-магазин для продажи мебе�
 - PostgreSQL 15+
 - Git
 
-📁 Структура проекта
-
-woodenmaster/
-├── server/                 # Бэкенд (Node.js + Express)
-│   ├── controllers/        # Бизнес-логика (обработка запросов)
-│   ├── middleware/         # AuthMiddleware, checkRole, ErrorHandler
-│   ├── models/             # Модели Sequelize (таблицы БД)
-│   ├── routes/             # Маршруты API
-│   ├── static/             # Загруженные изображения товаров
-│   ├── .env                # Переменные окружения (не коммитится)
-│   ├── db.js               # Подключение к PostgreSQL
-│   └── index.js            # Точка входа сервера
-├── client/                 # Фронтенд (React + Vite)
-│   ├── public/             # Статические файлы
-│   ├── src/
-│   │   ├── api/            # Функции для HTTP-запросов
-│   │   ├── components/     # Переиспользуемые компоненты
-│   │   ├── pages/          # Страницы (CatalogPage, CartPage, Admin...)
-│   │   ├── store/          # Zustand-хранилища (auth, cart, product)
-│   │   ├── utils/          # Вспомогательные функции
-│   │   ├── App.jsx         # Маршрутизация
-│   │   ├── main.jsx        # Точка входа
-│   │   └── index.css       # Глобальные стили
-│   ├── .env                # Переменные окружения (не коммитится)
-│   └── vite.config.js      # Конфигурация Vite
-└── README.md
-
 📡 API Эндпоинты (основные)
 Метод	URL	Описание	Доступ
+
 POST	/api/user/registration	Регистрация	Все
+
 POST	/api/user/login	Вход	Все
+
 GET	/api/products	Список товаров (с фильтрацией)	Все
+
 GET	/api/products/:id	Детали товара	Все
+
 POST	/api/products	Добавление товара	ADMIN
+
 PUT	/api/products/:id	Редактирование товара	ADMIN
+
 DELETE	/api/products/:id	Удаление товара	ADMIN
+
 GET	/api/cart	Получение корзины	Авторизованные
+
 POST	/api/cart	Добавление в корзину	Авторизованные
+
 PUT	/api/cart/:id	Изменение количества	Авторизованные
+
 POST	/api/cart/delete	Удаление из корзины	Авторизованные
+
 POST	/api/order	Оформление заказа	Авторизованные
+
 GET	/api/order/user/:id	История заказов	Авторизованные
+
 GET	/api/order	Все заказы	ADMIN
+
 PUT	/api/order/:id	Изменение статуса	ADMIN
+
 DELETE	/api/order/:id	Удаление заказа	ADMIN
+
 GET	/api/productType	Список категорий	Все
+
 POST	/api/productType	Добавление категории	ADMIN
+
 GET	/api/material	Список материалов	Все
+
 POST	/api/material	Добавление материала	ADMIN
+
 
 👤 Автор
 Рочев Даниил Викторович
